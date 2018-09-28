@@ -1,0 +1,5 @@
+/bin/
+.DS_Store
+.classpath
+.project
+src/module-info.java
