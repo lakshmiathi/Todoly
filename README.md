@@ -48,7 +48,8 @@ _This solution achieve the following requirements:_
 
 * Activity diagram
 
->>>>><img width="742" alt="screen shot 2018-10-12 at 22 05 11" src="https://user-images.githubusercontent.com/43344319/46891670-ee059a80-ce6a-11e8-990d-400b7f6ad8d9.png">
+<img width="704" alt="screen shot 2018-10-15 at 12 07 04" src="https://user-images.githubusercontent.com/43344319/46946602-8ae95300-d078-11e8-9bfe-ff2c044559b3.png">
+
 
 * Use case diagram
 
