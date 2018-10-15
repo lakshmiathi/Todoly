@@ -1,10 +1,15 @@
 package ToDoList;
+
+import java.util.stream.Collectors;
+import java.io.IOException;
 import java.io.Serializable;
-import java.util.Iterator;
-import java.util.LinkedList;
+import java.time.LocalDate;
 import java.util.List;
-import java.util.Scanner;
+import FileHandler.FileManager;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Formatter;
 
 
 /* A class to maintain an arbitrary number of contact details.
@@ -13,172 +18,206 @@ import java.util.ArrayList;
  */
 
 public class ToDoList implements Serializable{
+		
 	
 	private ArrayList<ToDoTask>taskList;
-	private int taskCount;
+	private FileManager toDoFileMgr;
 	
+	
+    
 
 /*Initialization for the todo list.
  * 
  */
 
-	public ToDoList() {
-		taskList = new ArrayList<>();
-		taskCount = taskList.size()+1;
-	}
+	public ToDoList() {	
+		
+		toDoFileMgr= new FileManager();
+		taskList = new ArrayList<ToDoTask>();
+		}
 
 	public  ArrayList<ToDoTask> getTaskList() {
 		return taskList;
 	}
 	
-	public int getTaskCount() {
-		return taskCount;
+	
+
+	//to create and add new task.
+	public String addTask(String project, String title, LocalDate date) {
+		if (this.taskExists(project, title)) {
+			return "";
+		}
+
+		ToDoTask task = new ToDoTask(title, date,  project);
+		this.taskList.add(task);
+		System.out.println(taskList.size());
+		StringBuilder sb = new StringBuilder();
+		Formatter fmt = new Formatter(sb);
+		fmt.format("date = %s toDo = %s project = %s status = %s", date , title, project, "open");
+		return sb.toString();
+		
+	}
+	
+	//save the task added in the taskList.
+	public void saveTask() throws IOException {
+		
+		try {
+			
+			toDoFileMgr.writeOutput(taskList);
+			
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
 	}
 
-	public void addToTaskList(ToDoTask task) {
-		
-		if(task != null) {
-			taskList.add(task);
-			taskCount++;
-			}
-	}
+
+	//to display the task.
 	
 	
-	
-	/*public void sortByproject(TodoTask task) {
-		int comparison = project.compareTo(task.getProject());
-		
-	}*/
-	
-	public void editTask(int count) {
+	  public void displayTask(int choice) {
+		  
+	 if (choice == 1) {
+		  System.out.println("******************************  GROUP BY DATE  ********************************");	
+		  String format = "%-7s %-12s %-35s %-15s %-10s \n"; 
+		  System.out.print("-------------------------------------------------------------------------------\n");
+		  System.out.print(String.format(format,"S.No.","DATE","TASK","PROJECT", "STATUS"));
+		  System.out.print("-------------------------------------------------------------------------------\n");        	  
 		 
-			Scanner sc = new Scanner(System.in);
-			int choice = 1;
-			while (choice != 0) {
-		
-		  System.out.println();
-	      System.out.println("You can now edit the task"); 
-		  System.out.println("Pick an option:");
-	      System.out.println("(1) To edit the taskitem");
-	      System.out.println("(2) To edit the date");
-	      System.out.println("(3) To edit the project");
-	      System.out.println("(4) To edit the status");
-	      System.out.println("(0) - Quit");
-	      try {
-	          choice = sc.nextInt();
-	          sc.nextLine();  //clear input stream
-	          switch (choice) {
-	            case 1:  //edit taskitem
-	            	taskList.get(count--).setTaskItem();
-	              	break;
-	          	case 2:  //edit date
-	          		taskList.get(count--).setDate();
-	                break;
-	          	case 3:  //edit project
-	          		taskList.get(count--).setProject(); 
-	                break;
-	          	case 4:  //edit project
-	          		taskList.get(count--).setStatus(); 
-	                break;
-	          	case 0:
-	                System.out.println("Goodbye! no more modification.");
-	                break;
-	          	default:
-	                 System.out.println("Sorry, but " + choice + " is not one of " +
-	                     "the menu choices. Please try again.");
-	                 break;
-	      			}    		  
-	      		}	catch (java.util.InputMismatchException ime) {
-	      			System.out.println("Sorry, but you must enter a number.");
-	      			sc.nextLine();  //clear bad input from stream
-	      			}
-			}
+		  Collections.sort(this.taskList);
+		for(int i=0;i<this.taskList.size();i++){
+			String format1 = "%-7s %-12s %-35s %-15s %-10s \n";
+			int j = i+1;
+			
+	  System.out.print(String.format(format1,j,this.taskList.get(i).getDate(), this.taskList.get(i).getTitle(),this.taskList.get(i).getProject(),this.taskList.get(i).getStatus()));
+	
+	  }
+		System.out.print("-------------------------------------------------------------------------------\n");
 	}
-
-     
+	 
+	 if(choice==2) {
+		  System.out.println("******************************  GROUP BY PROJECT  *****************************");
+		  String format = "%-7s %-12s %-35s %-15s %-10s \n"; 
+		  System.out.print("-------------------------------------------------------------------------------\n");
+		  System.out.print(String.format(format,"S.No.","DATE","TASK","PROJECT", "STATUS"));
+		  System.out.print("-------------------------------------------------------------------------------\n");        	  
+		 
+		  taskList.sort((ToDoTask t1, ToDoTask t2) -> t1.getProject().compareTo(t2.getProject()));
+		  
+		  for(int i=0;i<this.taskList.size();i++){
+			String format1 = "%-7s %-12s %-35s %-15s %-10s \n";
+			int j = i+1;
+	  System.out.print(String.format(format1,j,this.taskList.get(i).getDate(), this.taskList.get(i).getTitle(),this.taskList.get(i).getProject(),this.taskList.get(i).getStatus()));
+	
+	  }
+		System.out.print("-------------------------------------------------------------------------------\n");
+	}	 
+	  }
+	
+	  
+	 // remove task
+	public void removeTask(int tasknum){
 		
-	/*public void removeTask(int count) {
-		/*taskCount = count;
-		if(count >=1 && count <= taskCount) {
-			taskList.remove(count--);
 		
-		//no such element
-		if (count < 1 || count > taskCount) {
-		      return null;  
-		    }else {
-		    
-		    	//convert to 0-based indexing used by array	
-		    	taskList.remove(Count--)
-		      //delete by shifting everything down into removed item's space
-		      for (int i = count; i < taskCount - 1; i++) {
-		        this.todo[i] = this.todo[i + 1];
-		      }
-		      this.count--;  //removed an element
-		      return deleted;
-		    }
+		int index = tasknum - 1;
+		if((tasknum>=0 && tasknum <= taskList.size())&&(taskList!=null)){
 		
-		}*/
+			taskList.remove(index);
+		 
+			}else {
+				System.out.println("Task not available. Enter valid task number:");
+						}}
 		
-public static void main(String[] args) {
-	// TODO Auto-generated method stub
-	java.util.Scanner sc = new java.util.Scanner(System.in);
-	ToDoTask task = new ToDoTask();
-	ArrayList<ToDoTask>taskList = new ArrayList<ToDoTask>();
-	int choice = 1;
-    while (choice != 0) {
-      //print list
-    	
-      System.out.println();
-      System.out.println("Welcome to Todoly");
-      System.out.println(taskList);  
+		public void loading() {
+			this.taskList= toDoFileMgr.reading();
+		}
+	
+	
+	public void editTask(int index, int c, String editItem) 
+	
+	{
+		if((index>=0 && index < taskList.size())&&(taskList!=null)){
+		if(c == 1) {
+			LocalDate dateInput= LocalDate.parse(editItem);
+			taskList.get(index).setDate(dateInput);
+		}
+		if(c==2) {
+			
+			taskList.get(index).setTitle(editItem);
+			
+		}
+		if(c==3) {
+			taskList.get(index).setProject(editItem);
+		}
+			if(c==4) {
+				taskList.get(index).setStatus(editItem);
+			}
+	
+	} else {
+		System.out.println("Task not available. Enter valid task number:");
+	}
+	}
+	
+		 
 
-      
-      //print option choices
-      System.out.println("Option:");
-      System.out.println("(1) - Show task List by date or project");
-      System.out.println("(2) - Add new task");
-      System.out.println("(3) - Edit specific item");
-      System.out.println("(4) - Save and Exit");
-      System.out.print("Pick an option : ");
+public void sortTaskList() {
+	List<ToDoTask>list = new ArrayList<ToDoTask>();
+	ArrayList<ToDoTask> taskList = (ArrayList<ToDoTask>)list.stream().sorted().collect(Collectors.toList());
+	System.out.println("---Sorting using Comparator by project---");
+	taskList = (ArrayList<ToDoTask>)list.stream().sorted(Comparator.comparing(ToDoTask::getProject).reversed()).collect(Collectors.toList());
+taskList.forEach(e -> System.out.println("TaskItem:"+ e.getTitle()+", Date: "
+						+e.getDate()+", Project:"+e.getProject()+", "+ "Status:"+e.getStatus()));
+	
+    }
+	
+	public int unDoneItem() {
+		String status = "OPEN";
+		int undone=0;
+		for(ToDoTask t : taskList) {
+			status.equals(t.getStatus().toUpperCase());
+			undone++;			
+		}
+		return undone;
+	}
+	
+	public int doneItem() {
+		int x = this.taskList.size();
+		int y = this.unDoneItem();
+		int done = x-y;
+		return(done);
+	}
+	
+	public void overDueTask() {
+		int overDue = 0;
+		LocalDate date=null;
+		for(ToDoTask t: taskList) {
+			date=(t.getDate());
+		if(date.isBefore(LocalDate.now())) {	
+			overDue++;
+		}
+		}
+		if(overDue>0) {
+			System.err.println(">> You have " +overDue+ " overdue tasks");
+		} 
+	}
+	
+	
+	public boolean taskExists(String project, String title) {
+		for (ToDoTask task : this.taskList) {
+			if (task.getTitle().equals(title) && task.getProject().equals(project)) {
+				return true;
+				}
+			}
+		return false;
+		
+	}
+}//end class
+		
+	
+		       
+	
 
-      //process user's menu choice
-      try {
-        choice = sc.nextInt();
-        sc.nextLine();  //clear input stream
-        switch (choice) {
-          case 1:  //Display task list by date or project
-                   
-            break;
-
-          case 2:  //Add task.
-        	  System.out.print("Eter the task you need to do: ");
-              taskList.add(task);
-            break;
-
-          /*case 3:  //Edit specific task.
-            System.out.print("Enter the count of the item to remove: ");
-            int count = keybd.nextInt();
-            if(count >=1 && count <= taskList.size()) {
-            taskList.get(count--).editTask();
-            }
-             break;*/
-
-          case 4:
-            System.out.println("Goodbye!");
-            break;
-
-          default:
-            System.out.println("Sorry, but " + choice + " is not one of " +
-                "the menu choices. Please try again.");
-            break;
-        }
-      }catch (java.util.InputMismatchException ime) {
-        System.out.println("Sorry, but you must enter a number.");
-        sc.nextLine();  //clear bad input from stream
-      }
-    }//end while
-  }//end main
-}
-
-
-
+   
+  
+		

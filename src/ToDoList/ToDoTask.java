@@ -1,18 +1,24 @@
 package ToDoList;
+
+import java.io.BufferedWriter;
+import java.io.FileWriter;
 import java.io.Serializable;
+import java.time.LocalDate;
+import java.util.Date;
+import java.util.Formatter;
 import java.util.Scanner;
 
-/*Todo task detail: taskitems, date, project and status.
+/*Todo task detail: tasktitle, date, project and status.
  * 
  * @author Seetha .A.
  * @version 28.09.2018
  */
 public class ToDoTask implements Comparable<ToDoTask>, Serializable{
-	private String taskitem;
-	private String date;
+	private String title;
+	private LocalDate date;
 	private String project;
-	private String status;
-	Scanner sc = new Scanner(System.in);
+	private String status;	
+	
 /*
  * Set up the Task details.
  * @param taskitem
@@ -20,13 +26,13 @@ public class ToDoTask implements Comparable<ToDoTask>, Serializable{
  * @param project
  * @param status
  */
-	public ToDoTask(String taskitem, String date, String project, String status) {
+	public ToDoTask(String title, LocalDate date, String project, String status) {
 		
-		if(taskitem == null) {
-			taskitem = "";	
+		if(title== null) {
+			title = "";	
 		}
 		if(date == null) {
-			date = "";
+			date = null;
 		}
 		if(project == null) {
 			project = "";
@@ -34,10 +40,14 @@ public class ToDoTask implements Comparable<ToDoTask>, Serializable{
 		if(status == null) {
 			status = "";
 		}
-	this.taskitem = taskitem.trim();
-	this.date = date.trim();
+	this.title = title.trim();
+	this.date = date;
 	this.project = project.trim();
 	this.status = status.trim();
+	}
+	
+	public ToDoTask(String title, LocalDate date, String project) {
+		this(title, date, project, "OPEN");
 	}
 	
 	public ToDoTask() {
@@ -47,10 +57,10 @@ public class ToDoTask implements Comparable<ToDoTask>, Serializable{
 	/*Return the task item, date project and status.
 	 *
 	 */
-	public String getTaskItem() {
-		return taskitem;
+	public String getTitle() {
+		return title;
 	}
-	public String getDate() {
+	public LocalDate getDate() {
 		return date;
 	}
 	public String getProject() {
@@ -60,41 +70,32 @@ public class ToDoTask implements Comparable<ToDoTask>, Serializable{
 		return status;
 	}
 	
-	public void setTaskItem() {
-	    System.out.print("\n\tEnter Task : ");
-        taskitem = sc.nextLine();
+	
+	
+	
+	
+	public void setTitle(String title) {
+	    
+		this.title = title;
 	}
 	
-	public void setDate() {
-		System.out.print("\n\tEnter Date : ");
-        date = sc.nextLine();
+	public void setDate(LocalDate date )
+	{
+		
+	   this.date = date;
 	}
-	public void setProject() {
-		System.out.print("\n\tEnter Project : ");
-        project = sc.nextLine();
+	public void setProject(String project) {
+		
+		this.project = project;
 	}
-	public void setStatus() {
-        System.out.print("\n\tEnter Status : ");
-        status = sc.nextLine();
-	}	
+	public void setStatus(String status) {
+      
+		this.status = status;
 	
-	// Defining GetData()
-	public void addTask()           
-    {
-        
-        System.out.print("\n\tEnter Task : ");
-        taskitem = sc.nextLine();
+	}
+	
+		
 
-        System.out.print("\n\tEnter Date : ");
-        date = sc.nextLine();
-        
-        System.out.print("\n\tEnter Project : ");
-        project = sc.nextLine();
-        
-        System.out.print("\n\tEnter Status : ");
-        status = sc.nextLine();
-    }
-	
 	/*Test for content equality between two objects.
 	 *@param othertask the object to compare to this one.
 	 *@return true if the argument object is a set 
@@ -103,7 +104,7 @@ public class ToDoTask implements Comparable<ToDoTask>, Serializable{
 	public boolean equals(Object other) {
 		if(other instanceof ToDoTask) {
 			ToDoTask otherTask = (ToDoTask)other;
-			return taskitem.equals(otherTask.getTaskItem()) && 
+			return title.equals(otherTask.getTitle()) && 
 					date.equals(otherTask.getDate()) && 
 					project.equals(otherTask.getProject()) && 
 					status.equals(otherTask.getStatus());
@@ -134,16 +135,20 @@ public class ToDoTask implements Comparable<ToDoTask>, Serializable{
 		    return status.compareTo(otherTask.getStatus());
 	}
 	
-	/* Return a multi-line string containing the taskitem, date, project and status.
+	/** Return a multi-line string containing the taskitem, date, project and status.
 	 * (non-Javadoc)
 	 * @see java.lang.Object#toString()
 	 */
-	public String toString() {
-		return taskitem +"\n" + date + "\n"+ project + "\n" + status;
-		}
 	
+	public String toString() {
+		return this.date +"|" + this.title + "|"+ this.project + "|" + this.status + "\n";
+		// return this.date +" \n" + this.taskitem + " \n"+ this.project + " \n" + this.status;
+	}
+		
+	}//end class
+
 
 	
-}
+
 
 

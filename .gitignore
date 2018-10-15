@@ -3,3 +3,6 @@
 .classpath
 .project
 src/module-info.java
+/_old
+/doc
+/docs
